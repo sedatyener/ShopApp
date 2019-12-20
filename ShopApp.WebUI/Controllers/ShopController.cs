@@ -16,7 +16,6 @@ namespace ShopApp.WebUI.Controllers
         public ShopController(IProductService productService)
         {
             _productService = productService;
-
         }
 
         public IActionResult Details(int? id)
@@ -36,9 +35,11 @@ namespace ShopApp.WebUI.Controllers
                 Categories=product.ProductCategories.Select(i=>i.Category).ToList()
             });
         }
-        public IActionResult List()
+
+        // products/telefon?page=2
+        public IActionResult List(string category, int page=1)
         {
-            return View(new ProductListModel() { Products = _productService.GetAll() });
+            return View(new ProductListModel() { Products = _productService.GetProductsByCategory(category,page) });
         }
     }
 }

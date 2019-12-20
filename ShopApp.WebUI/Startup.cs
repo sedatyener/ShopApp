@@ -18,7 +18,9 @@ namespace ShopApp.WebUI
         public void ConfigureServices(IServiceCollection services)
         {
             services.AddScoped<IProductDAL, EfCoreProductDal>();
+            services.AddScoped<ICategoryDAL, EfCoreCategoryDal>();
             services.AddScoped<IProductService, ProductManager>();
+            services.AddScoped<ICategoryService, CategoryManager>();
             services.AddMvc().SetCompatibilityVersion(Microsoft.AspNetCore.Mvc.CompatibilityVersion.Version_2_2);
         }
 
@@ -33,7 +35,19 @@ namespace ShopApp.WebUI
 
             app.UseStaticFiles();
             app.CustomStaticFiles();
-            app.UseMvcWithDefaultRoute();
+            //app.UseMvcWithDefaultRoute();
+            app.UseMvc(routes =>
+            {
+                routes.MapRoute(
+                    name: "products",
+                    template: "products/{category?}",
+                    defaults: new { controller="Shop",action="List" }
+                    );
+                routes.MapRoute(
+                   name: "default",
+                   template: "{controller=Home}/{action=index}/{id?}"
+                   );
+            });
 
             //app.Run(async (context) =>
             //{

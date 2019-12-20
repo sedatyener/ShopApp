@@ -1,9 +1,7 @@
 ﻿Errors and Fixes:
 dotnet-ef does not exist
 ----------------------------------------------------------
-If you’re trying to run EF Core migrations using commands 
-like dotnet ef migrations add NAME or 
-dotnet ef database update 
+If you’re trying to run EF Core migrations using commands like dotnet ef migrations add NAME or dotnet ef database update 
 and you’re getting errors here’s the fix.
 You need to install the dotnet-ef tool, 
 ideally globally so you can run it from anywhere. 
