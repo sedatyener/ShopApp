@@ -35,6 +35,11 @@ namespace ShopApp.DataAccess.Concrete.Memory
             throw new NotImplementedException();
         }
 
+        public int GetCountByCategory(string category)
+        {
+            throw new NotImplementedException();
+        }
+
         public Product GetOne(Expression<Func<Product, bool>> filter)
         {
             throw new NotImplementedException();
@@ -45,7 +50,7 @@ namespace ShopApp.DataAccess.Concrete.Memory
             throw new NotImplementedException();
         }
 
-        public List<Product> GetProductsByCategory(string category)
+        public List<Product> GetProductsByCategory(string category,int page,int pageSize)
         {
             throw new NotImplementedException();
         }

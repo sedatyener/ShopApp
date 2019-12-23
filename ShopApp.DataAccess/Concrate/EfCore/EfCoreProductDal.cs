@@ -8,6 +8,22 @@ namespace ShopApp.DataAccess.Concrete.EfCore
 {
     public class EfCoreProductDal : EfCoreGenericRepository<Product, ShopContext>, IProductDAL
     {
+        public int GetCountByCategory(string category)
+        {
+            using (var context = new ShopContext())
+            {
+                var products = context.Products.AsQueryable();
+                if (!string.IsNullOrEmpty(category))
+                {
+                    products = products
+                                .Include(i => i.ProductCategories)
+                                .ThenInclude(i => i.Category)
+                                .Where(i => i.ProductCategories.Any(a => a.Category.Name.ToLower() == category.ToLower()));
+                }
+                return products.Count();
+            }
+        }
+
         public Product GetProductDetails(int id)
         {
             using (var context = new ShopContext())
@@ -20,7 +36,9 @@ namespace ShopApp.DataAccess.Concrete.EfCore
             }
         }
 
-        public List<Product> GetProductsByCategory(string category)
+       
+
+        public List<Product> GetProductsByCategory(string category,int page,int pageSize)
         {
             using (var context = new ShopContext())
             {
@@ -32,8 +50,15 @@ namespace ShopApp.DataAccess.Concrete.EfCore
                                 .ThenInclude(i => i.Category)
                                 .Where(i => i.ProductCategories.Any(a => a.Category.Name.ToLower() == category.ToLower()));
                 }
-                return products.ToList();
+                return products.Skip((page-1)*pageSize).Take(pageSize).ToList();
             }
         }
+
+
+
+        //public List<Product> GetProductsByCategory(string category, int page)
+        //{
+        //    throw new System.NotImplementedException();
+        //}
     }
 }
