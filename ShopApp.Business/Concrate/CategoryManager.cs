@@ -24,6 +24,11 @@ namespace ShopApp.Business.Concrate
             _categoryDAL.Delete(entity);
         }
 
+        public void DeleteFromCategory(int categoryId, int productId)
+        {
+            _categoryDAL.DeleteFromCategory(categoryId, productId);
+        }
+
         public List<Category> GetAll()
         {
             return _categoryDAL.GetAll();
@@ -32,6 +37,11 @@ namespace ShopApp.Business.Concrate
         public Category GetById(int id)
         {
             return _categoryDAL.GetById(id);
+        }
+
+        public Category GetByIdWithProducts(int id)
+        {
+            return _categoryDAL.GetByIdWithProducts(id);
         }
 
         public void Update(Category entity)
