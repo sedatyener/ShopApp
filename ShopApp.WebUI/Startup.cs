@@ -36,11 +36,12 @@ namespace ShopApp.WebUI
 
             services.Configure<IdentityOptions>(options => {
                 //Password
-                options.Password.RequireDigit = true;
-                options.Password.RequireLowercase = true;
-                options.Password.RequiredLength = 6;
-                options.Password.RequireNonAlphanumeric = true;
-                options.Password.RequireUppercase = true;
+                options.Password.RequireDigit = false;
+                options.Password.RequireLowercase = false;
+                options.Password.RequiredLength = 1;
+                options.Password.RequireNonAlphanumeric = false;
+                options.Password.RequireUppercase = false;
+
                 options.Lockout.MaxFailedAccessAttempts = 5;
                 options.Lockout.DefaultLockoutTimeSpan = TimeSpan.FromMinutes(5);
                 options.Lockout.AllowedForNewUsers = true;
@@ -51,7 +52,8 @@ namespace ShopApp.WebUI
                 options.SignIn.RequireConfirmedPhoneNumber = false;
             });
 
-            services.ConfigureApplicationCookie(options=>{
+            services.ConfigureApplicationCookie(options=>
+            {
                 options.LoginPath = "/account/login";
                 options.LogoutPath = "/account/logout";
                 options.AccessDeniedPath = "/account/accessdenied";
@@ -60,7 +62,9 @@ namespace ShopApp.WebUI
                 options.Cookie = new CookieBuilder
                 {
                     HttpOnly = true,
-                    Name=".ShopApp.Security.Cookie"
+                    Name=".ShopApp.Security.Cookie",
+                    //Prevent cross site attacks
+                    SameSite=SameSiteMode.Strict
                 };
             });
 

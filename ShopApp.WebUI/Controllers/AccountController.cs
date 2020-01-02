@@ -1,14 +1,13 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
-using Microsoft.AspNetCore.Identity;
+﻿using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using ShopApp.WebUI.Identity;
 using ShopApp.WebUI.Models;
+using System.Threading.Tasks;
 
 namespace ShopApp.WebUI.Controllers
 {
+    //Controller genelinde Get metodları haricindeki bütün metodlar validate edilmek zorundadır
+    //[AutoValidateAntiforgeryToken]
     public class AccountController : Controller
     {
 
@@ -25,6 +24,7 @@ namespace ShopApp.WebUI.Controllers
             return View(new RegisterModel());
         }
         [HttpPost]
+        [ValidateAntiForgeryToken]
         public async Task<IActionResult> Register(RegisterModel model)
         {
             if(!ModelState.IsValid)
@@ -39,6 +39,7 @@ namespace ShopApp.WebUI.Controllers
             };
 
             var result = await _userManager.CreateAsync(user, model.Password);
+           
             if(result.Succeeded)
             {
                 //generate token
@@ -47,6 +48,50 @@ namespace ShopApp.WebUI.Controllers
             }
             ModelState.AddModelError("","Bilinmeyen hata oluştu, lütfen tekrar deneyiniz.");
             return View(model);
+        }
+
+        public IActionResult Login(string returnUrl=null)
+        {
+
+            return View(new LoginModel()
+            {
+                ReturnUrl = returnUrl
+            }); 
+        }
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> Login (LoginModel model)
+        {
+            
+
+            if(!ModelState.IsValid)
+            {
+                return View(model);
+            }
+
+            var user = await _userManager.FindByEmailAsync(model.Email);
+
+            if(user ==null)
+            {
+                ModelState.AddModelError("", "Bu email ile daha önce hesap oluşturulmamış.");
+                return View(model);
+            }
+
+            var result = await _signInManager.PasswordSignInAsync(user, model.Password,false,false);
+            if(result.Succeeded)
+            {
+                return Redirect(model.ReturnUrl??"~/");
+            }
+
+            ModelState.AddModelError("","Email veya parola yanlış.");
+            return View(model);
+        }
+
+        public async Task<IActionResult> Logout()
+        {
+            await _signInManager.SignOutAsync();
+            return Redirect("~/");
         }
     }
 }
